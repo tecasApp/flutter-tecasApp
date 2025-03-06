@@ -22,7 +22,7 @@ jobs:
             - name: Check code formatting 
               run: |
                 flutter analyze
-                flutter format --set-exit-if-changed .
+                dart format --set-exit-if-changed .
 
             - run: flutter test
             - run: flutter test --coverage 

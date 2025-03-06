@@ -17,26 +17,23 @@ class CubitCounterScreen extends StatelessWidget {
 class _CubitCounterView extends StatelessWidget {
   const _CubitCounterView();
 
-
   @override
   Widget build(BuildContext context) {
-
     //Usar la siguiente linea implica que flutter evalue la reconstrucción de los widgets,
-    //que es eficiente, pero si se puede evitar mejor, Se puede usar un context.selector, o un 
-    //widget wrapper como BlocBuilder.  
+    //que es eficiente, pero si se puede evitar mejor, Se puede usar un context.selector, o un
+    //widget wrapper como BlocBuilder.
     //  final counterState = context.watch<CounterCubit>().state;
 
     return Scaffold(
       appBar: AppBar(
-        title: context.select((CounterCubit value ) {
+        title: context.select((CounterCubit value) {
           return Text('Cubit counter: ${value.state.transactionCount} ');
         }),
         actions: [
-          IconButton(onPressed: () => {
-            
-            context.read<CounterCubit>().reset()
-
-          }, icon: Icon(Icons.refresh_rounded)),
+          IconButton(
+            onPressed: () => {context.read<CounterCubit>().reset()},
+            icon: Icon(Icons.refresh_rounded),
+          ),
         ],
       ),
 
@@ -53,7 +50,7 @@ class _CubitCounterView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () => {context.read<CounterCubit>().increaseBy(3) },
+            onPressed: () => {context.read<CounterCubit>().increaseBy(3)},
             heroTag: "1",
             child: const Text("+3"),
           ),
@@ -69,7 +66,6 @@ class _CubitCounterView extends StatelessWidget {
             heroTag: "3",
             child: const Text("+1"),
           ),
- 
         ],
       ),
     );
