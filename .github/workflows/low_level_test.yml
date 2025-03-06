@@ -1,6 +1,6 @@
 name: Test, lint and build
 on:
-    pull_request:
+    push:
         branches:
             - main
 jobs:
