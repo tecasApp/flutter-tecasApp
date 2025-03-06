@@ -15,7 +15,7 @@ class CubitCounterScreen extends StatelessWidget {
 }
 
 class _CubitCounterView extends StatelessWidget {
-  const _CubitCounterView({super.key});
+  const _CubitCounterView();
 
 
   @override
