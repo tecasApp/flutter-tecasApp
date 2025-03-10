@@ -1,6 +1,6 @@
 name: Test, lint and build
 on:
-    push:
+    pull_request:
         branches:
             - main
 jobs:
@@ -32,7 +32,7 @@ jobs:
               uses: hrishikesh-kadam/setup-lcov@v1
     
             - name: Report Code Covera  ge
-              uses: zgosalvez/github-actions-report-lcov@v3
+              uses: zgosalvez/github-actions-report-lcov@v4
               with:
                 coverage-files: coverage/lcov.info
                 minimum-coverage: 0
