@@ -48,6 +48,7 @@ jobs:
           update-comment: true
 
   build:
+    needs: test 
     runs-on: macos-latest
     steps:
       - name: Checkout repository
