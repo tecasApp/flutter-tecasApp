@@ -4,6 +4,17 @@ on:
         branches:
             - main  
 jobs:
+
+    validate_branch:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check PR source branch
+              run: |
+                if [[ "${{ github.head_ref }}" != "develop" ]]; then
+                  echo "❌ ERROR: Pull requests to main must come from develop!"
+                  exit 1
+                fi
+                
     build_ipa:
         if: github.head_ref == 'develop'  
         runs-on: macos-latest
