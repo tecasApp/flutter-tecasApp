@@ -14,9 +14,9 @@ jobs:
                   echo "❌ ERROR: Pull requests to main must come from develop!"
                   exit 1
                 fi
-                
+
     build_ipa:
-        if: github.head_ref == 'develop'  
+        needs: validate_branch
         runs-on: macos-latest
         steps:
             - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
                 path: |
                   build/ios_build.tar.gz
     build_apk:
-        if: github.head_ref == 'develop'  
+        needs: validate_branch
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
