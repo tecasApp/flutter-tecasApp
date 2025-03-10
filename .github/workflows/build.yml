@@ -1,0 +1,86 @@
+name: Build IPA and APK
+on:
+    pull_request:
+        branches:
+            - main  
+jobs:
+
+    validate_branch:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Check PR source branch
+              run: |
+                if [[ "${{ github.head_ref }}" != "develop" ]]; then
+                  echo "❌ ERROR: Pull requests to main must come from develop!"
+                  exit 1
+                fi
+
+    build_ipa:
+        needs: validate_branch
+        runs-on: macos-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+      
+            - name: Setup Flutter (with cache)
+              uses: subosito/flutter-action@v2
+              with:
+                flutter-version: '3.29.0'
+                channel: 'stable'
+                cache: true
+
+
+
+            - name: Build IPA (iOS)
+              run: flutter build ipa --no-codesign
+      
+            - name: Compress Archives and IPAs
+              run: tar -czf build/ios_build.tar.gz build/ios
+
+            - name: Generate Build Info
+              id: build_info
+              run: echo "BUILD_NAME=$(git rev-parse --short HEAD)-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+        
+      
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: APK-${{ env.BUILD_NAME }}
+                path: |
+                  build/ios_build.tar.gz
+    build_apk:
+        needs: validate_branch
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+    
+            - name: Setup Flutter (with cache)
+              uses: subosito/flutter-action@v2
+              with:
+                flutter-version: '3.29.0'
+                channel: 'stable'
+                cache: true
+    
+            - name: Setup Java
+              uses: actions/setup-java@v4
+              with:
+                distribution: 'zulu'
+                java-version: "17"
+
+
+            - name: Build APK
+              run: flutter build apk
+
+            - name: Generate Build Info
+              id: build_info
+              run: echo "BUILD_NAME=$(git rev-parse --short HEAD)-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+        
+            - name: Upload Artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                name: APK-${{ env.BUILD_NAME }}
+                path: |
+                    build/app/outputs/flutter-apk/app-release.apk
+    
+    
