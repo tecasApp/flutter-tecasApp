@@ -1,56 +1,84 @@
-name: Test, lint and build
+name: Test, Lint and Build
+
 on:
-    pull_request:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
-    test:
-        runs-on: macos-latest
+  test:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        permissions:
-            contents: read
-            pull-requests: write
+      - name: Setup Flutter (with cache)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
 
-        steps:
-            - name: clone repository
-              uses: actions/checkout@v4
-            
-            - name: setup flutter
-              uses: subosito/flutter-action@v2
-              with:
-                flutter-version: '3.29.0'
-                channel: 'stable'
-            
-            - run: flutter --version
-            - run: flutter pub get
+      - name: Flutter version
+        run: flutter --version
 
-            - name: Check code formatting 
-              run: |
-                flutter analyze
-                dart format --set-exit-if-changed .
+      - name: Get dependencies
+        run: flutter pub get
 
-            - run: flutter test
-            - run: flutter test --coverage 
-            
-            - name: Setup LCOV
-              uses: hrishikesh-kadam/setup-lcov@v1
-    
-            - name: Report Code Coverage
-              uses: zgosalvez/github-actions-report-lcov@v4
-              with:
-                coverage-files: coverage/lcov.info  
-                minimum-coverage: 0
-                github-token: ${{ secrets.GITHUB_TOKEN }}
-                update-comment: true
+      - name: Check code formatting
+        run: |
+          flutter analyze
+          dart format --set-exit-if-changed .
 
+      - name: Run tests
+        run: flutter test --coverage
 
+      - name: Setup LCOV
+        uses: hrishikesh-kadam/setup-lcov@v1
 
+      - name: Report Code Coverage
+        uses: zgosalvez/github-actions-report-lcov@v4
+        with:
+          coverage-files: coverage/lcov.info
+          minimum-coverage: 0
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          update-comment: true
 
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-            
+      - name: Setup Flutter (with cache)
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: "21"
 
-        
+      - name: Build APK
+        run: flutter build apk
 
+      - name: Build IPA (iOS)
+        run: flutter build ipa --no-codesign
 
+      - name: Compress Archives and IPAs
+        run: tar -czf build/ios_build.tar.gz build/ios
 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Releases
+          path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/ios_build.tar.gz
