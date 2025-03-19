@@ -1,0 +1,63 @@
+{
+    "registration": {
+      "app_bar_title": "User Registration",
+      "register_button": "Register",
+      
+      "labels":{
+        "username": "Username",
+        "email": "Email",
+        "password": "Password",
+        "confirm_password": "Confirm Password",
+        "date_of_birth": "Date of Birth",
+        "sex": "Sex",
+        "gender": "Gender",
+        "sexual_orientation": "Sexual Orientation",
+        "musical_tastes": "Musical Tastes",
+        "hobbies": "Hobbies"
+      },
+
+      "options": {
+        "sex": {
+          "man": "Man",
+          "woman": "Woman",
+          "intersex": "Intersex"
+        },
+        "gender": {
+          "cisgender": "Cisgender",
+          "transgender": "Transgender",
+          "non_binary": "Non-binary",
+          "gender_fluid": "Gender Fluid"
+        },
+        "sexual_orientation": {
+          "straight": "Straight",
+          "homosexual": "Homosexual",
+          "bisexual": "Bisexual",
+          "pansexual": "Pansexual",
+          "asexual": "Asexual",
+          "demisexual": "Demisexual",
+          "omnisexual": "Omnisexual",
+          "polysexual": "Polysexual",
+          "graysexual": "Graysexual"
+        },
+        "musical_tastes": {
+          "pop": "Pop",
+          "rock": "Rock",
+          "hip_hop": "Hip-Hop / Rap",
+          "electronic": "Electronic / EDM",
+          "rnb": "R&B / Soul",
+          "jazz": "Jazz",
+          "classical": "Classical",
+          "reggae": "Reggae"
+        },
+        "hobbies": {
+          "reading": "Reading",
+          "listening_to_music": "Listening to Music",
+          "watching_movies": "Watching Movies & Series",
+          "gaming": "Gaming",
+          "exercising": "Exercising & Fitness",
+          "traveling": "Traveling"
+        }
+      }
+    }
+  }
+  

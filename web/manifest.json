@@ -1,6 +1,6 @@
 {
-    "name": "block_qbit",
-    "short_name": "block_qbit",
+    "name": "tecas_app",
+    "short_name": "tecas_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
