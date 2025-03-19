@@ -25,11 +25,12 @@ abstract class AppRouter extends ChangeNotifier {
           builder: (context, state) => const HomePage(),
         ),
       ],
+      // Redirect use for 
       redirect: (BuildContext context, GoRouterState state) {
         final status = context.read<AppBloc>().state.user;
         final location = state.uri.toString();
 
-        if (status == AppUser.empty && 
+        if (status == AppUser.empty &&  
         !location.contains('/login') && 
         !location.contains('/email_and_password')) {
       return '/login';

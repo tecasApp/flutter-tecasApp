@@ -16,11 +16,15 @@ class AppProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+
+        //We use the provider package to inject the AuthenticationRepositoryImpl instance into the AppBloc.
         Provider<AuthenticationRepository>(
           create: (_) => AuthenticationRepositoryImpl(),
         ),
         BlocProvider(
-          create: (_) => AppBloc(authenticationRepository: AuthenticationRepositoryImpl())..add(const AppUserSubscriptionRequested()),
+          // ".." cascade operator sends an event to the bloc  in order to perform  a user authentication check-up.
+          //must use the previous provider to inject the AuthenticationRepositoryImpl instance into the AppBloc.
+          create: (_) => AppBloc(authenticationRepository: context.read<AuthenticationRepository>())..add(const AppUserSubscriptionRequested()),
         )
       ],
 
