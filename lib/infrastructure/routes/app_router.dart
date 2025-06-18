@@ -7,6 +7,7 @@ import 'package:tecas_app/domain/models/app_user.dart';
 import 'package:tecas_app/presentation/features/home/view/home_page.dart';
 import 'package:tecas_app/presentation/features/login/view/login_page.dart';
 import 'package:tecas_app/presentation/features/register/email_and_password/view/email_and_password_page.dart';
+import 'package:tecas_app/presentation/features/register/personal_information/view/personal_information_page.dart';
 
 abstract class AppRouter extends ChangeNotifier {
   static GoRouter router = GoRouter(
@@ -24,6 +25,10 @@ abstract class AppRouter extends ChangeNotifier {
           path: '/home',
           builder: (context, state) => const HomePage(),
         ),
+        GoRoute(
+          path: '/personal_information_register',
+          builder: (context, state) => const PersonalInformationRegisterPage(),
+        )
       ],
       // Redirect use for 
       redirect: (BuildContext context, GoRouterState state) {

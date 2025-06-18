@@ -2,13 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:tecas_app/domain/repositories_def/authentication_repository_def.dart';
 import 'package:tecas_app/domain/services_def/authentication_service_def.dart';
-import 'package:tecas_app/infrastructure/services_impl/authentication_service_impl.dart';
 
 class AuthenticationRepositoryImpl implements AuthenticationRepository {
   final AuthenticationService _authService;
-
-  AuthenticationRepositoryImpl({AuthenticationService? authService})
-      : _authService = authService ?? AuthenticationServiceImpl();
+  AuthenticationRepositoryImpl({required AuthenticationService authService}): _authService = authService;
 
   @override
   Future<User?> signUp({required String email, required String password}) async {
@@ -31,7 +28,12 @@ class AuthenticationRepositoryImpl implements AuthenticationRepository {
   }
 
   @override
-  User? getCurrentUser() {
+  Future<User?> getCurrentUser() async {
     return _authService.getCurrentUser();
+  }
+  
+  @override
+  Future<String?> getCurrentUserId() async {
+    return _authService.getCurrentUser()?.uid;
   }
 }

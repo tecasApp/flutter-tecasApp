@@ -1,0 +1,39 @@
+class PersonalInformationUserDTO {
+  final String id;
+  final String email;
+  final String fullName;
+  final String username;
+  final String nationality;
+  final String phoneNumber;
+
+  PersonalInformationUserDTO({
+    required this.id,
+    required this.email,
+    required this.fullName,
+    required this.username,
+    required this.nationality,
+    required this.phoneNumber,
+  });
+
+  factory PersonalInformationUserDTO.fromFirestore(Map<String, dynamic> data) {
+    return PersonalInformationUserDTO(
+      id: data['id'] ?? '',
+      email: data['email'] ?? '',
+      fullName: data['fullName'] ?? '',
+      username: data['username'] ?? '',
+      nationality: data['nationality'] ?? '',
+      phoneNumber: data['phoneNumber'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'id': id,
+      'email': email,
+      'fullName': fullName,
+      'username': username,
+      'nationality': nationality,
+      'phoneNumber': phoneNumber,
+    };
+  }
+}

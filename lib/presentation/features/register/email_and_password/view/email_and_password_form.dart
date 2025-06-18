@@ -15,11 +15,11 @@ class EmailAndPasswordForm extends StatelessWidget {
       listener: (context, state) {
         if (state.status.isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('User created successfully!')),
+            const SnackBar(content: Text('User Created Successfully!')),
           );
           Future.delayed(const Duration(seconds: 2), () {
             context.read<AppBloc>().add(AppUserSubscriptionRequested());
-            context.go('/home');
+            context.go('/personal_information_register');
           });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)

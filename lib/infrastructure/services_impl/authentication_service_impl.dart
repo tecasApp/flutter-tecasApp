@@ -8,10 +8,10 @@ class AuthenticationServiceImpl implements AuthenticationService {
   final GoogleSignIn _googleSignIn;
 
   AuthenticationServiceImpl({
-    FirebaseAuth? firebaseAuth,
-    GoogleSignIn? googleSignIn,
-  })  : _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn();
+    required FirebaseAuth firebaseAuth,
+    required GoogleSignIn googleSignIn,
+  }) : _firebaseAuth = firebaseAuth,
+       _googleSignIn = googleSignIn;
 
   @override
   Future<User?> signUp(String email, String password) async {
@@ -23,7 +23,10 @@ class AuthenticationServiceImpl implements AuthenticationService {
   }
 
   @override
-  Future<User?> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
     final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
