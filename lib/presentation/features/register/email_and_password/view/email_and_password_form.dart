@@ -17,9 +17,17 @@ class EmailAndPasswordForm extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('User Created Successfully!')),
           );
-          Future.delayed(const Duration(seconds: 2), () {
-            context.read<AppBloc>().add(AppUserSubscriptionRequested());
-            context.go('/personal_information_register');
+
+          context.read<AppBloc>().add(AppUserSubscriptionRequested());
+
+          Future.delayed(const Duration(milliseconds: 300), () {
+            final profile = context.read<AppBloc>().state.profile;
+
+            if (!profile!.isComplete) {
+              context.go('/personal_information_register');
+            } else {
+              context.go('/home');
+            }
           });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -60,8 +68,9 @@ class _EmailInput extends StatelessWidget {
 
     return TextField(
       key: const Key('signUpForm_emailInput_textField'),
-      onChanged: (email) =>
-          context.read<EmailAndPasswordBloc>().add(EmailChanged(email)),
+      onChanged:
+          (email) =>
+              context.read<EmailAndPasswordBloc>().add(EmailChanged(email)),
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'email',
@@ -81,8 +90,10 @@ class _PasswordInput extends StatelessWidget {
 
     return TextField(
       key: const Key('signUpForm_passwordInput_textField'),
-      onChanged: (password) =>
-          context.read<EmailAndPasswordBloc>().add(PasswordChanged(password)),
+      onChanged:
+          (password) => context.read<EmailAndPasswordBloc>().add(
+            PasswordChanged(password),
+          ),
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'password',
@@ -102,9 +113,10 @@ class _ConfirmPasswordInput extends StatelessWidget {
 
     return TextField(
       key: const Key('signUpForm_confirmedPasswordInput_textField'),
-      onChanged: (confirmPassword) => context
-          .read<EmailAndPasswordBloc>()
-          .add(ConfirmedPasswordChanged(confirmPassword)),
+      onChanged:
+          (confirmPassword) => context.read<EmailAndPasswordBloc>().add(
+            ConfirmedPasswordChanged(confirmPassword),
+          ),
       obscureText: true,
       decoration: InputDecoration(
         labelText: 'confirm password',
@@ -131,15 +143,15 @@ class _SignUpButton extends StatelessWidget {
     return ElevatedButton(
       key: const Key('signUpForm_continue_raisedButton'),
       style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         backgroundColor: Colors.orangeAccent,
       ),
-      onPressed: isValid
-          ? () =>
-              context.read<EmailAndPasswordBloc>().add(SignUpFormSubmitted())
-          : null,
+      onPressed:
+          isValid
+              ? () => context.read<EmailAndPasswordBloc>().add(
+                SignUpFormSubmitted(),
+              )
+              : null,
       child: const Text('SIGN UP'),
     );
   }
@@ -152,10 +164,7 @@ class _LoginButton extends StatelessWidget {
     return TextButton(
       key: const Key('loginForm_login_flatButton'),
       onPressed: () => context.go('/login'),
-      child: Text(
-        'LOG IN',
-        style: TextStyle(color: theme.primaryColor),
-      ),
+      child: Text('LOG IN', style: TextStyle(color: theme.primaryColor)),
     );
   }
 }

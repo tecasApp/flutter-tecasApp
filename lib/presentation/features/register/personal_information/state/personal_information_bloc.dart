@@ -151,25 +151,35 @@ class PersonalInformationBloc
     Emitter<PersonalInformationState> emit,
   ) async {
     if (!state.isValid) return;
+
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
+
     try {
-      await _userRepository.personalInformationRegister(
+      final success = await _userRepository.personalInformationRegister(
         email: state.email.value,
         fullName: state.fullName.value,
         username: state.username.value,
         nationality: state.nationality.value,
         phoneNumber: state.phoneNumber.value,
       );
-      emit(state.copyWith(status: FormzSubmissionStatus.success));
-    } on PersonalInformationRegisterFailure catch (e) {
+
+      if (success) {
+        emit(state.copyWith(status: FormzSubmissionStatus.success));
+      } else {
+        emit(
+          state.copyWith(
+            status: FormzSubmissionStatus.failure,
+            errorMessage: 'No se pudo registrar la información personal.',
+          ),
+        );
+      }
+    } catch (e) {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: e.message,
+          errorMessage: 'Error inesperado.',
         ),
       );
-    } catch (_) {
-      emit(state.copyWith(status: FormzSubmissionStatus.failure));
     }
   }
 }

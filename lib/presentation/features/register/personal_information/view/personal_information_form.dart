@@ -24,9 +24,14 @@ class PersonalInformationForm extends StatelessWidget {
               content: Text('Personal Information Registered Successfully!'),
             ),
           );
-          Future.delayed(const Duration(seconds: 2), () {
-            context.read<AppBloc>().add(AppUserSubscriptionRequested());
-            context.go('/home');
+
+          context.read<AppBloc>().add(AppProfileRefreshRequested());
+
+          Future.delayed(Duration(milliseconds: 300), () {
+            final state = context.read<AppBloc>().state;
+            print(
+              '🔍 Estado luego de refresh manual → ${state.profile?.isComplete}',
+            );
           });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
@@ -166,7 +171,6 @@ class _NationalityInput extends StatelessWidget {
       items:
           nationalities
               .map(
-                
                 (key) => DropdownMenuItem<String>(
                   value: key,
                   child: Text('nationalities.$key'.tr()),

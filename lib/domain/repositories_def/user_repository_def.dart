@@ -1,3 +1,5 @@
+import 'package:tecas_app/domain/entities/user_profile.dart';
+
 abstract class UserRepository {
   Future<bool> personalInformationRegister({
     required String email,
@@ -6,6 +8,7 @@ abstract class UserRepository {
     required String fullName,
     required String phoneNumber,
   }
-
   );
+
+   Future<UserProfile?> getUserProfile(String uid);
 }

@@ -11,3 +11,7 @@ final class AppUserSubscriptionRequested extends AppEvent {
 final class AppLogoutPressed extends AppEvent {
   const AppLogoutPressed();
 }
+
+class AppProfileRefreshRequested extends AppEvent {
+  const AppProfileRefreshRequested();
+}
