@@ -3,11 +3,11 @@ part of 'app_bloc.dart';
 final class AppState extends Equatable {
   const AppState({
     this.user = AppUser.empty,
-    this.profile,
+    this.profile = UserProfile.empty,
   });
 
   final AppUser user;
-  final UserProfile? profile;
+  final UserProfile profile;
 
   @override
   List<Object?> get props => [user, profile];

@@ -2,11 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:tecas_app/app/state/app_bloc.dart';
 import 'package:tecas_app/external/form_models/nationality.dart';
 import 'package:tecas_app/presentation/features/register/personal_information/state/personal_information_bloc.dart';
+import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 
 class PersonalInformationForm extends StatelessWidget {
   const PersonalInformationForm({super.key});
@@ -28,10 +27,7 @@ class PersonalInformationForm extends StatelessWidget {
           context.read<AppBloc>().add(AppProfileRefreshRequested());
 
           Future.delayed(Duration(milliseconds: 300), () {
-            final state = context.read<AppBloc>().state;
-            print(
-              '🔍 Estado luego de refresh manual → ${state.profile?.isComplete}',
-            );
+            context.read<RegisterFlowBloc>().add(GoToNextStep());
           });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)

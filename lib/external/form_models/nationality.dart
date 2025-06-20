@@ -1,5 +1,4 @@
 import 'package:formz/formz.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 enum NationalityValidationError {
   required('Nationality can\'t be empty'),

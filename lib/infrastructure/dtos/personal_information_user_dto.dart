@@ -28,7 +28,6 @@ class PersonalInformationUserDTO {
 
   Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
       'email': email,
       'fullName': fullName,
       'username': username,

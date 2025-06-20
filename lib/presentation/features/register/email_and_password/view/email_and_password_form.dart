@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:tecas_app/app/state/app_bloc.dart';
 import 'package:tecas_app/presentation/features/register/email_and_password/state/email_and_password_bloc.dart';
+import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 
 class EmailAndPasswordForm extends StatelessWidget {
   const EmailAndPasswordForm({super.key});
@@ -21,13 +22,7 @@ class EmailAndPasswordForm extends StatelessWidget {
           context.read<AppBloc>().add(AppUserSubscriptionRequested());
 
           Future.delayed(const Duration(milliseconds: 300), () {
-            final profile = context.read<AppBloc>().state.profile;
-
-            if (!profile!.isComplete) {
-              context.go('/personal_information_register');
-            } else {
-              context.go('/home');
-            }
+            context.read<RegisterFlowBloc>().add(GoToNextStep());
           });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)

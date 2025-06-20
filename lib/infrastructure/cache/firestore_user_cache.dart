@@ -6,21 +6,20 @@ class CachedUserProfile {
   factory CachedUserProfile() => _instance;
   CachedUserProfile._internal();
 
-  UserProfile? _profile;
+  UserProfile _profile = UserProfile.empty;
 
-  Future<UserProfile?> getProfile(UserRepository userRepository, String uid) async {
-    if (_profile != null) {
-      print('🟡 [CachedUserProfile] Retornando perfil desde caché');
-      return _profile;
-    }
-
-    print('🔵 [CachedUserProfile] No hay caché, solicitando al repositorio...');
-    _profile = await userRepository.getUserProfile(uid);
-
-    if (_profile == null) {
-      print('⚠️ [CachedUserProfile] No se encontró perfil en Firestore.');
+  Future<UserProfile> getProfile(
+    UserRepository userRepository,
+    String uid,
+  ) async {
+    if (!_profile.isComplete) {
+      print(
+        '🔵 [CachedUserProfile] No hay perfil completo en caché, solicitando al repositorio...',
+      );
+      _profile = await userRepository.getUserProfile(uid) ?? UserProfile.empty;
+      print('✅ [CachedUserProfile] Perfil actualizado: $_profile');
     } else {
-      print('✅ [CachedUserProfile] Perfil obtenido y almacenado en caché: $_profile');
+      print('🟡 [CachedUserProfile] Retornando perfil desde caché');
     }
 
     return _profile;
@@ -28,6 +27,6 @@ class CachedUserProfile {
 
   void clear() {
     print('🧹 [CachedUserProfile] Caché eliminada');
-    _profile = null;
+    _profile = UserProfile.empty;
   }
 }

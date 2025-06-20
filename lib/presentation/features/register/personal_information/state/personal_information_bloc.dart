@@ -9,7 +9,6 @@ import 'package:tecas_app/external/form_models/nationality.dart';
 import 'package:tecas_app/external/form_models/phone_number.dart';
 import 'package:tecas_app/external/form_models/username.dart';
 import 'package:tecas_app/infrastructure/cache/registration_options_cache.dart';
-import 'package:tecas_app/infrastructure/failures/user_failures.dart';
 
 part 'personal_information_event.dart';
 part 'personal_information_state.dart';
@@ -147,7 +146,7 @@ class PersonalInformationBloc
   }
 
   Future<void> _onPersonalInformationFormSubmitted(
-    PersonalInformationEvent event,
+    PersonalInformationFormSubmitted event,
     Emitter<PersonalInformationState> emit,
   ) async {
     if (!state.isValid) return;
@@ -155,7 +154,7 @@ class PersonalInformationBloc
     emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
     try {
-      final success = await _userRepository.personalInformationRegister(
+      await _userRepository.registerPersonalInformation(
         email: state.email.value,
         fullName: state.fullName.value,
         username: state.username.value,
@@ -163,21 +162,13 @@ class PersonalInformationBloc
         phoneNumber: state.phoneNumber.value,
       );
 
-      if (success) {
-        emit(state.copyWith(status: FormzSubmissionStatus.success));
-      } else {
-        emit(
-          state.copyWith(
-            status: FormzSubmissionStatus.failure,
-            errorMessage: 'No se pudo registrar la información personal.',
-          ),
-        );
-      }
+      emit(state.copyWith(status: FormzSubmissionStatus.success));
     } catch (e) {
       emit(
         state.copyWith(
           status: FormzSubmissionStatus.failure,
-          errorMessage: 'Error inesperado.',
+          errorMessage:
+              'Error inesperado al registrar la información personal.',
         ),
       );
     }
