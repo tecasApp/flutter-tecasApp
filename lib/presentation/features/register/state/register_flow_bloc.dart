@@ -59,5 +59,10 @@ RegisterStep getStepFromUserAndProfile(AppUser user, UserProfile profile) {
     return RegisterStep.personalInclinations;
   }
 
+  if (profile.musicalTastes.isEmpty ||
+      profile.hobbies.isEmpty) {
+    return RegisterStep.personalLikes;
+  }
+
   return RegisterStep.complete;
 }

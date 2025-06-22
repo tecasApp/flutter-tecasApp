@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tecas_app/domain/services_def/user_service_def.dart';
 import 'package:tecas_app/infrastructure/dtos/personal_inclinations_user_dto.dart';
 import 'package:tecas_app/infrastructure/dtos/personal_information_user_dto.dart';
+import 'package:tecas_app/infrastructure/dtos/personal_likes_user_dto.dart';
 import 'package:tecas_app/infrastructure/dtos/user_firestore_dto.dart';
 
 class UserServiceImpl implements UserService {
@@ -50,6 +51,11 @@ class UserServiceImpl implements UserService {
   Future<void> registerPersonalInclinations(
     PersonalInclinationsUserDTO dto,
   ) async {
+    await _firestore.collection('users').doc(dto.id).update(dto.toFirestore());
+  }
+
+  @override
+  Future<void> registerPersonalLikes(PersonalLikesUserDTO dto) async {
     await _firestore.collection('users').doc(dto.id).update(dto.toFirestore());
   }
 }

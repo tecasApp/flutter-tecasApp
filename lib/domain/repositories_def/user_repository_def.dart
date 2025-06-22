@@ -14,6 +14,11 @@ abstract class UserRepository {
     required String gender,
     required String sexualOrientation,
   });
+
+  Future<void> registerPersonalLikes({
+    required List<String> musicalTastes,
+    required List<String> hobbies
+  });
   
   Future<void> registerBirthday(DateTime birthday);
 

@@ -32,9 +32,9 @@ class UserProfile {
       phoneNumber.isNotEmpty &&
       birthdayDate != null &&
       gender?.isNotEmpty == true &&
-      sexualOrientation?.isNotEmpty == true;
-  // hobbies.isNotEmpty &&
-  // musicalTastes.isNotEmpty;
+      sexualOrientation?.isNotEmpty == true &&
+      hobbies.isNotEmpty &&
+      musicalTastes.isNotEmpty;
 
   UserProfile copyWith({
     String? fullName,

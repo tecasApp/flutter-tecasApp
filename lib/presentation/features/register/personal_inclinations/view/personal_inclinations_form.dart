@@ -6,6 +6,7 @@ import 'package:tecas_app/app/state/app_bloc.dart';
 import 'package:tecas_app/external/form_models/gender.dart';
 import 'package:tecas_app/external/form_models/sexual_orientation.dart';
 import 'package:tecas_app/presentation/features/register/personal_inclinations/state/personal_inclinations_bloc.dart';
+import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 
 class PersonalInclinationsForm extends StatelessWidget {
   const PersonalInclinationsForm({super.key});
@@ -25,6 +26,10 @@ class PersonalInclinationsForm extends StatelessWidget {
           );
 
           context.read<AppBloc>().add(AppProfileRefreshRequested());
+
+          Future.delayed(Duration(milliseconds: 300), () {
+            context.read<RegisterFlowBloc>().add(GoToNextStep());
+          });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -71,31 +76,32 @@ class _GenderInput extends StatelessWidget {
 
     return DropdownButtonFormField<String>(
       key: const Key('personalInclinations_genderInput_dropdown'),
-      value: genderState.value.isNotEmpty &&
-              genderOptions.contains(genderState.value)
-          ? genderState.value
-          : null,
+      value:
+          genderState.value.isNotEmpty &&
+                  genderOptions.contains(genderState.value)
+              ? genderState.value
+              : null,
       decoration: InputDecoration(
         labelText: 'gender',
-        errorText: displayError != null
-            ? (displayError == GenderValidationError.required
-                ? 'Gender can\'t be empty'
-                : 'Selected gender is not valid.')
-            : null,
+        errorText:
+            displayError != null
+                ? (displayError == GenderValidationError.required
+                    ? 'Gender can\'t be empty'
+                    : 'Selected gender is not valid.')
+                : null,
       ),
-      items: genderOptions
-          .map(
-            (option) => DropdownMenuItem<String>(
-              value: option,
-              child: Text('registration.options.gender.$option'.tr()),
-            ),
-          )
-          .toList(),
+      items:
+          genderOptions
+              .map(
+                (option) => DropdownMenuItem<String>(
+                  value: option,
+                  child: Text('registration.options.gender.$option'.tr()),
+                ),
+              )
+              .toList(),
       onChanged: (selected) {
         if (selected != null) {
-          context.read<PersonalInclinationsBloc>().add(
-                GenderChanged(selected),
-              );
+          context.read<PersonalInclinationsBloc>().add(GenderChanged(selected));
         }
       },
     );
@@ -117,37 +123,41 @@ class _SexualOrientationInput extends StatelessWidget {
 
     return DropdownButtonFormField<String>(
       key: const Key('personalInclinations_orientationInput_dropdown'),
-      value: orientationState.value.isNotEmpty &&
-              options.contains(orientationState.value)
-          ? orientationState.value
-          : null,
+      value:
+          orientationState.value.isNotEmpty &&
+                  options.contains(orientationState.value)
+              ? orientationState.value
+              : null,
       decoration: InputDecoration(
         labelText: 'sexual orientation',
-        errorText: displayError != null
-            ? (displayError == SexualOrientationValidationError.required
-                ? 'Orientation can\'t be empty'
-                : 'Selected orientation is not valid.')
-            : null,
+        errorText:
+            displayError != null
+                ? (displayError == SexualOrientationValidationError.required
+                    ? 'Orientation can\'t be empty'
+                    : 'Selected orientation is not valid.')
+                : null,
       ),
-      items: options
-          .map(
-            (option) => DropdownMenuItem<String>(
-              value: option,
-              child: Text('registration.options.sexual_orientation.$option'.tr()),
-            ),
-          )
-          .toList(),
+      items:
+          options
+              .map(
+                (option) => DropdownMenuItem<String>(
+                  value: option,
+                  child: Text(
+                    'registration.options.sexual_orientation.$option'.tr(),
+                  ),
+                ),
+              )
+              .toList(),
       onChanged: (selected) {
         if (selected != null) {
           context.read<PersonalInclinationsBloc>().add(
-                SexualOrientationChanged(selected),
-              );
+            SexualOrientationChanged(selected),
+          );
         }
       },
     );
   }
 }
-
 
 class _SubmitButton extends StatelessWidget {
   const _SubmitButton();

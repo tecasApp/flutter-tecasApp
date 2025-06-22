@@ -12,6 +12,8 @@ import 'package:tecas_app/presentation/features/register/personal_inclinations/s
 import 'package:tecas_app/presentation/features/register/personal_inclinations/view/personal_inclinations_form.dart';
 import 'package:tecas_app/presentation/features/register/personal_information/state/personal_information_bloc.dart';
 import 'package:tecas_app/presentation/features/register/personal_information/view/personal_information_form.dart';
+import 'package:tecas_app/presentation/features/register/personal_likes/state/personal_likes_bloc.dart';
+import 'package:tecas_app/presentation/features/register/personal_likes/view/personal_likes_form.dart';
 import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 
 class RegisterStepperPage extends StatelessWidget {
@@ -72,6 +74,18 @@ class RegisterStepperPage extends StatelessWidget {
                         context.read<MiscellaneousRepository>(),
                       ),
                   child: const PersonalInclinationsForm(),
+                ),
+              ),
+              Step(
+                title: const Text('L'),
+                isActive: state.step.index >= 4,
+                content: BlocProvider<PersonalLikesBloc>(
+                  create:
+                      (_) => PersonalLikesBloc(
+                        context.read<UserRepository>(),
+                        context.read<MiscellaneousRepository>(),
+                      ),
+                  child: const PersonalLikesForm(),
                 ),
               ),
             ],

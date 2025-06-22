@@ -5,6 +5,7 @@ enum RegisterStep {
   personalInformation,
   birthdayFilter,
   personalInclinations,
+  personalLikes,
   complete,
 }
 

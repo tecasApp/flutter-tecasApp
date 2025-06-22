@@ -4,6 +4,7 @@ import 'package:tecas_app/domain/repositories_def/user_repository_def.dart';
 import 'package:tecas_app/domain/services_def/user_service_def.dart';
 import 'package:tecas_app/infrastructure/dtos/personal_inclinations_user_dto.dart';
 import 'package:tecas_app/infrastructure/dtos/personal_information_user_dto.dart';
+import 'package:tecas_app/infrastructure/dtos/personal_likes_user_dto.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final AuthenticationRepository _authRepository;
@@ -74,5 +75,18 @@ class UserRepositoryImpl implements UserRepository {
       sexualOrientation: sexualOrientation,
     );
     await _userService.registerPersonalInclinations(personalInclinationsDTO);
+  }
+
+    @override
+  Future<void> registerPersonalLikes({
+    required List<String> musicalTastes,
+    required List<String> hobbies,
+  }) async {
+    final personalLikesDTO = PersonalLikesUserDTO(
+      id: await _getCurrentUserId(),
+      musicalTastes: musicalTastes,
+      hobbies: hobbies,
+    );
+    await _userService.registerPersonalLikes(personalLikesDTO);
   }
 }
