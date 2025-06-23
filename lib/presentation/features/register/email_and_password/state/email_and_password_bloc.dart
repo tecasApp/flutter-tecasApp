@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
 import 'package:tecas_app/domain/repositories_def/authentication_repository_def.dart';
+import 'package:tecas_app/domain/repositories_def/user_repository_def.dart';
 import 'package:tecas_app/external/form_models/confirm_password.dart';
 import 'package:tecas_app/external/form_models/email.dart';
 import 'package:tecas_app/external/form_models/password.dart';
@@ -14,8 +15,9 @@ part 'email_and_password_state.dart';
 class EmailAndPasswordBloc
     extends Bloc<EmailAndPasswordEvent, EmailAndPasswordState> {
   final AuthenticationRepository _authenticationRepository;
+  final UserRepository _userRepository;
 
-  EmailAndPasswordBloc(this._authenticationRepository)
+  EmailAndPasswordBloc(this._authenticationRepository, this._userRepository)
       : super(const EmailAndPasswordState()){
         on<EmailChanged>(_onEmailChanged);
         on<PasswordChanged>(_onPasswordChanged);
@@ -60,6 +62,9 @@ class EmailAndPasswordBloc
         email: state.email.value,
         password: state.password.value,
       );
+
+      await _userRepository.registerUser();
+      
       emit(state.copyWith(status: FormzSubmissionStatus.success));
     } on SignUpWithEmailAndPasswordFailure catch (e) {
       emit(

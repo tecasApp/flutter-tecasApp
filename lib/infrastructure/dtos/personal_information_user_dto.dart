@@ -1,5 +1,4 @@
 class PersonalInformationUserDTO {
-  final String id;
   final String email;
   final String fullName;
   final String username;
@@ -7,7 +6,6 @@ class PersonalInformationUserDTO {
   final String phoneNumber;
 
   PersonalInformationUserDTO({
-    required this.id,
     required this.email,
     required this.fullName,
     required this.username,
@@ -17,7 +15,6 @@ class PersonalInformationUserDTO {
 
   factory PersonalInformationUserDTO.fromFirestore(Map<String, dynamic> data) {
     return PersonalInformationUserDTO(
-      id: data['id'] ?? '',
       email: data['email'] ?? '',
       fullName: data['fullName'] ?? '',
       username: data['username'] ?? '',
@@ -33,6 +30,7 @@ class PersonalInformationUserDTO {
       'username': username,
       'nationality': nationality,
       'phoneNumber': phoneNumber,
+      'isActive': true,
     };
   }
 }

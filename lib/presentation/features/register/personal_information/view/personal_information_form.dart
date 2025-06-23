@@ -5,7 +5,6 @@ import 'package:formz/formz.dart';
 import 'package:tecas_app/app/state/app_bloc.dart';
 import 'package:tecas_app/external/form_models/nationality.dart';
 import 'package:tecas_app/presentation/features/register/personal_information/state/personal_information_bloc.dart';
-import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 
 class PersonalInformationForm extends StatelessWidget {
   const PersonalInformationForm({super.key});
@@ -26,9 +25,6 @@ class PersonalInformationForm extends StatelessWidget {
 
           context.read<AppBloc>().add(AppProfileRefreshRequested());
 
-          Future.delayed(Duration(milliseconds: 300), () {
-            context.read<RegisterFlowBloc>().add(GoToNextStep());
-          });
         } else if (state.status.isFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()

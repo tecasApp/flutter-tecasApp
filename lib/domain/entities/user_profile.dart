@@ -10,6 +10,7 @@ class UserProfile {
   final List<String> musicalTastes;
   final bool isActive;
   final String? deactivationReason;
+  final ProfileCompletionStep? profileCompletionStep;
 
   const UserProfile({
     required this.fullName,
@@ -23,18 +24,10 @@ class UserProfile {
     this.musicalTastes = const [],
     this.isActive = true,
     this.deactivationReason,
+    this.profileCompletionStep,
   });
 
-  bool get isComplete =>
-      fullName.isNotEmpty &&
-      username.isNotEmpty &&
-      nationality.isNotEmpty &&
-      phoneNumber.isNotEmpty &&
-      birthdayDate != null &&
-      gender?.isNotEmpty == true &&
-      sexualOrientation?.isNotEmpty == true &&
-      hobbies.isNotEmpty &&
-      musicalTastes.isNotEmpty;
+  bool get isComplete => profileCompletionStep == ProfileCompletionStep.complete;
 
   UserProfile copyWith({
     String? fullName,
@@ -48,6 +41,7 @@ class UserProfile {
     List<String>? musicalTastes,
     bool? isActive,
     String? deactivationReason,
+    ProfileCompletionStep? profileCompletionStep,
   }) {
     return UserProfile(
       fullName: fullName ?? this.fullName,
@@ -61,6 +55,7 @@ class UserProfile {
       musicalTastes: musicalTastes ?? this.musicalTastes,
       isActive: isActive ?? this.isActive,
       deactivationReason: deactivationReason ?? this.deactivationReason,
+      profileCompletionStep: profileCompletionStep ?? this.profileCompletionStep,
     );
   }
 
@@ -77,6 +72,18 @@ class UserProfile {
     if (this == UserProfile.empty) {
       return 'UserProfile: empty';
     }
-    return 'UserProfile(fullName: $fullName, username: $username, nationality: $nationality, phoneNumber: $phoneNumber, birthdayDate: $birthdayDate, gender: $gender, sexualOrientation: $sexualOrientation, hobbies: $hobbies, musicalTastes: $musicalTastes, isActive: $isActive, deactivationReason: $deactivationReason)';
+    return 'UserProfile(fullName: $fullName, username: $username, nationality: $nationality, phoneNumber: $phoneNumber, birthdayDate: $birthdayDate, gender: $gender, sexualOrientation: $sexualOrientation, hobbies: $hobbies, musicalTastes: $musicalTastes, isActive: $isActive, deactivationReason: $deactivationReason, profileCompletionStep: $profileCompletionStep)';
   }
+}
+
+enum ProfileCompletionStep  {
+  personalInformation,
+  birthdayFilter,
+  personalInclinations,
+  personalLikes,
+  complete,
+}
+
+extension ProfileStepExtension on ProfileCompletionStep {
+  String get name => toString().split('.').last;
 }

@@ -1,4 +1,3 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:tecas_app/app/state/app_bloc.dart';
@@ -7,7 +6,6 @@ import 'package:tecas_app/infrastructure/routes/refresh_stream.dart';
 
 import 'package:tecas_app/presentation/features/home/view/home_page.dart';
 import 'package:tecas_app/presentation/features/login/view/login_page.dart';
-import 'package:tecas_app/presentation/features/register/state/register_flow_bloc.dart';
 import 'package:tecas_app/presentation/features/register/view/register_stepper_page.dart';
 import 'package:tecas_app/presentation/features/underage/view/underage_page.dart';
 
@@ -23,12 +21,7 @@ class AppRouter {
         GoRoute(
           path: '/register',
           builder: (context, _) {
-            final user = appBloc.state.user;
-            final profile = appBloc.state.profile;
-            return BlocProvider(
-              create: (_) => RegisterFlowBloc(initialProfile: profile, initialUser: user, ),
-              child: const RegisterStepperPage(),
-            );
+            return const RegisterStepperPage();
           },
         ),
       ],
@@ -47,6 +40,18 @@ class AppRouter {
 
         final isOnLogin = location.startsWith('/login');
         final isOnRegister = location.startsWith('/register');
+        final isOnUnderage = location.startsWith('/underage');
+
+        final isDeactivated = profile.isActive == false;
+        final isUnderage = profile.deactivationReason == 'underage';
+
+        if (isLoggedIn && isDeactivated && isUnderage) {
+          if (!isOnUnderage) {
+            return '/underage';
+          } else {
+            return null;
+          }
+        }
 
         if (!isLoggedIn) {
           if (!isOnLogin && !isOnRegister) {
@@ -55,23 +60,15 @@ class AppRouter {
           return null;
         }
 
-        if (isLoggedIn && !isProfileComplete) {
+        if (!isProfileComplete) {
           if (!isOnRegister) {
             return '/register';
           }
           return null;
         }
 
-        if (isLoggedIn && isProfileComplete && (isOnLogin || isOnRegister)) {
+        if (isProfileComplete && (isOnLogin || isOnRegister)) {
           return '/home';
-        }
-
-        final isDeactivated = profile.isActive == false;
-        final isUnderage = profile.deactivationReason == 'underage';
-        final isOnUnderage = location.startsWith('/underage');
-
-        if (isLoggedIn && isDeactivated && isUnderage && !isOnUnderage) {
-          return '/underage';
         }
 
         return null;

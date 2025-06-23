@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tecas_app/domain/entities/user_profile.dart';
 import 'package:tecas_app/domain/repositories_def/authentication_repository_def.dart';
 import 'package:tecas_app/domain/repositories_def/user_repository_def.dart';
@@ -23,25 +24,6 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> registerPersonalInformation({
-    required String email,
-    required String fullName,
-    required String username,
-    required String nationality,
-    required String phoneNumber,
-  }) async {
-    final personalInformationDTO = PersonalInformationUserDTO(
-      id: await _getCurrentUserId(),
-      email: email,
-      fullName: fullName,
-      username: username,
-      nationality: nationality,
-      phoneNumber: phoneNumber,
-    );
-    await _userService.registerPersonalInformation(personalInformationDTO);
-  }
-
-  @override
   Future<UserProfile?> getUserProfile(String uid) async {
     final dto = await _userService.getUserProfile(uid);
     if (dto == null) {
@@ -52,15 +34,54 @@ class UserRepositoryImpl implements UserRepository {
   }
 
   @override
-  Future<void> registerBirthday(DateTime birthday) async {
-    return _userService.registerBirthday(await _getCurrentUserId(), birthday);
+  Future<void> deactivateAccount({required String reason}) async {
+    return _userService.updateUser(
+      await _getCurrentUserId(),
+      {'isActive': false, 'deactivationReason': reason},
+    );
   }
 
   @override
-  Future<void> deactivateAccount({required String reason}) async {
-    return _userService.deactivateUser(
-      await _getCurrentUserId(),
-      reason: reason,
+  Future<void> updateWithStep(
+    Map<String, dynamic> data,
+    ProfileCompletionStep step,
+  ) async {
+    final uid = await _getCurrentUserId();
+
+    final dataWithStep = {...data, 'profileCompletionStep': step.name};
+
+    await _userService.updateUser(uid, dataWithStep);
+  }
+
+  @override
+  Future<void> registerUser() async {
+    final uid = await _getCurrentUserId();
+    await _userService.setUser(uid, {
+      'isActive': true,
+      'createdAt': FieldValue.serverTimestamp(),
+      'profileCompletionStep': ProfileCompletionStep.personalInformation.name,
+    });
+  }
+
+  @override
+  Future<void> registerPersonalInformation({
+    required String email,
+    required String fullName,
+    required String username,
+    required String nationality,
+    required String phoneNumber,
+  }) async {
+    final dto = PersonalInformationUserDTO(
+      email: email,
+      fullName: fullName,
+      username: username,
+      nationality: nationality,
+      phoneNumber: phoneNumber,
+    );
+
+    await updateWithStep(
+      dto.toFirestore(),
+      ProfileCompletionStep.birthdayFilter,
     );
   }
 
@@ -69,24 +90,34 @@ class UserRepositoryImpl implements UserRepository {
     required String gender,
     required String sexualOrientation,
   }) async {
-    final personalInclinationsDTO = PersonalInclinationsUserDTO(
-      id: await _getCurrentUserId(),
+    final dto = PersonalInclinationsUserDTO(
       gender: gender,
       sexualOrientation: sexualOrientation,
     );
-    await _userService.registerPersonalInclinations(personalInclinationsDTO);
+
+    await updateWithStep(
+      dto.toFirestore(),
+      ProfileCompletionStep.personalLikes,
+    );
   }
 
-    @override
+  @override
+  Future<void> registerBirthday(DateTime birthday) async {
+    await updateWithStep({
+      'birthdayDate': birthday,
+    }, ProfileCompletionStep.personalInclinations);
+  }
+
+  @override
   Future<void> registerPersonalLikes({
     required List<String> musicalTastes,
     required List<String> hobbies,
   }) async {
-    final personalLikesDTO = PersonalLikesUserDTO(
-      id: await _getCurrentUserId(),
+    final dto = PersonalLikesUserDTO(
       musicalTastes: musicalTastes,
       hobbies: hobbies,
     );
-    await _userService.registerPersonalLikes(personalLikesDTO);
+
+    await updateWithStep(dto.toFirestore(), ProfileCompletionStep.complete);
   }
 }

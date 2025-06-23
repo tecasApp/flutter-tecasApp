@@ -1,6 +1,9 @@
 import 'package:tecas_app/domain/entities/user_profile.dart';
 
 abstract class UserRepository {
+
+  Future<void> registerUser();
+
   Future<void> registerPersonalInformation({
     required String email,
     required String username,
@@ -24,5 +27,7 @@ abstract class UserRepository {
 
   Future<void> deactivateAccount({required String reason});
 
-   Future<UserProfile?> getUserProfile(String uid);
+  Future<UserProfile?> getUserProfile(String uid);
+
+  Future<void> updateWithStep(Map<String, dynamic> data, ProfileCompletionStep step);
 }

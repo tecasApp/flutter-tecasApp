@@ -1,61 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tecas_app/domain/services_def/user_service_def.dart';
-import 'package:tecas_app/infrastructure/dtos/personal_inclinations_user_dto.dart';
-import 'package:tecas_app/infrastructure/dtos/personal_information_user_dto.dart';
-import 'package:tecas_app/infrastructure/dtos/personal_likes_user_dto.dart';
 import 'package:tecas_app/infrastructure/dtos/user_firestore_dto.dart';
 
 class UserServiceImpl implements UserService {
   final FirebaseFirestore _firestore;
 
-  UserServiceImpl({required firestore}) : _firestore = firestore;
+  UserServiceImpl({required FirebaseFirestore firestore})
+      : _firestore = firestore;
 
-  @override
-  Future<void> registerPersonalInformation(
-    PersonalInformationUserDTO personalInformationUserDTO,
-  ) async {
-    CollectionReference usersCollection = _firestore.collection('users');
-
-    await usersCollection
-        .doc(personalInformationUserDTO.id)
-        .set(personalInformationUserDTO.toFirestore());
+  DocumentReference<Map<String, dynamic>> _userDocRef(String uid) {
+    return _firestore.collection('users').doc(uid);
   }
 
   @override
   Future<UserFirestoreDTO?> getUserProfile(String uid) async {
-    final doc = await _firestore.collection('users').doc(uid).get();
+    try {
+      final doc = await _userDocRef(uid).get();
 
-    if (!doc.exists || doc.data() == null) {
-      return null;
+      if (!doc.exists || doc.data() == null) return null;
+
+      return UserFirestoreDTO.fromMap(doc.data()!, id: doc.id);
+    } catch (e) {
+      print('Error getting user profile for uid "$uid": $e');
+      rethrow;
     }
-
-    return UserFirestoreDTO.fromMap(doc.data()!, id: doc.id);
   }
 
   @override
-  Future<void> registerBirthday(String uid, DateTime birthday) async {
-    await _firestore.collection('users').doc(uid).update({
-      'birthdayDate': birthday,
-    });
+  Future<void> updateUser(String uid, Map<String, dynamic> data) async {
+    try {
+      await _userDocRef(uid).update(data);
+    } catch (e) {
+      print('Error updating user "$uid" with data $data: $e');
+      rethrow;
+    }
   }
 
   @override
-  Future<void> deactivateUser(String uid, {required String reason}) async {
-    await _firestore.collection('users').doc(uid).update({
-      'isActive': false,
-      'deactivationReason': reason,
-    });
-  }
-
-  @override
-  Future<void> registerPersonalInclinations(
-    PersonalInclinationsUserDTO dto,
-  ) async {
-    await _firestore.collection('users').doc(dto.id).update(dto.toFirestore());
-  }
-
-  @override
-  Future<void> registerPersonalLikes(PersonalLikesUserDTO dto) async {
-    await _firestore.collection('users').doc(dto.id).update(dto.toFirestore());
+  Future<void> setUser(String uid, Map<String, dynamic> data) async {
+    try {
+      await _userDocRef(uid).set(data, SetOptions(merge: true));
+    } catch (e) {
+      print('Error setting user "$uid" with data $data: $e');
+      rethrow;
+    }
   }
 }

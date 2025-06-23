@@ -13,6 +13,9 @@ class UserFirestoreDTO {
   final String? sexualOrientation;
   final List<String> hobbies;
   final List<String> musicalTastes;
+  final bool isActive;
+  final String? profileCompletionStep;
+  final String? deactivationReason;
 
   const UserFirestoreDTO({
     required this.id,
@@ -26,6 +29,9 @@ class UserFirestoreDTO {
     this.sexualOrientation,
     this.hobbies = const [],
     this.musicalTastes = const [],
+    this.isActive = true,
+    this.deactivationReason,
+    this.profileCompletionStep,
   });
 
   factory UserFirestoreDTO.fromMap(Map<String, dynamic> map, {required String id}) {
@@ -41,6 +47,9 @@ class UserFirestoreDTO {
       sexualOrientation: map['sexualOrientation'],
       hobbies: List<String>.from(map['hobbies'] ?? []),
       musicalTastes: List<String>.from(map['musicalTastes'] ?? []),
+      isActive: map['isActive'] ?? true,
+      deactivationReason: map['deactivationReason'],
+      profileCompletionStep: map['profileCompletionStep'],
     );
   }
 
@@ -51,12 +60,14 @@ class UserFirestoreDTO {
       'username': username,
       'nationality': nationality,
       'phoneNumber': phoneNumber,
-      'birthdayDate':
-          birthdayDate != null ? Timestamp.fromDate(birthdayDate!) : null,
+      'birthdayDate': birthdayDate != null ? Timestamp.fromDate(birthdayDate!) : null,
       'gender': gender,
       'sexualOrientation': sexualOrientation,
       'hobbies': hobbies,
       'musicalTastes': musicalTastes,
+      'isActive': isActive,
+      'deactivationReason': deactivationReason,
+      'profileCompletionStep': profileCompletionStep,
     };
   }
 
@@ -71,6 +82,9 @@ class UserFirestoreDTO {
       sexualOrientation: sexualOrientation,
       hobbies: hobbies,
       musicalTastes: musicalTastes,
+      isActive: isActive,
+      deactivationReason: deactivationReason,
+      profileCompletionStep: _mapProfileStepFromString(profileCompletionStep),
     );
   }
 
@@ -91,6 +105,17 @@ class UserFirestoreDTO {
       sexualOrientation: profile.sexualOrientation,
       hobbies: profile.hobbies,
       musicalTastes: profile.musicalTastes,
+      isActive: profile.isActive,
+      deactivationReason: profile.deactivationReason,
+      profileCompletionStep: profile.profileCompletionStep?.name,
+    );
+  }
+
+  ProfileCompletionStep? _mapProfileStepFromString(String? step) {
+    if (step == null) return null;
+    return ProfileCompletionStep.values.firstWhere(
+      (e) => e.name == step,
+      orElse: () => ProfileCompletionStep.personalInformation,
     );
   }
 }
